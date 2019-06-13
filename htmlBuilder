@@ -1,0 +1,36 @@
+ var body = new StringBuilder();
+
+            body.Append("<html>");
+            body.Append("<head>");
+            body.Append("<style>");
+            body.Append("body { font-family: Calibri; }");
+            body.Append("table, th, td {border: 1px solid black; border-collapse: collapse;}");
+            body.Append("th, td {padding: 5px;}"); 
+            body.Append("</style>");
+            body.Append("</head>");
+
+            body.Append("<body>");
+            body.Append($"<p>Dear All,</p>");
+            body.Append($"<p>This is an email to notify you that clearing member {parameters.CPCode} has an intraday deficit limit currently standing at {Math.Round(Math.Abs(parameters.CPPortfolioRiskLimitPercentage * 100)):F0}%.</p>");
+            body.Append($"<p>{parameters.ClearingHouseName} will not issue an intraday margin call until {parameters.ClearingHouseThreshold:F0}% of the limit is breached.</p>");
+            body.Append("<p>Please note that currently the below accounts combine to create the intraday deficit.</p>");
+
+            body.Append("<table>");
+            body.Append("<tr><th>Segregation</th><th>Account</th><th>Currency</th><th align=\"right\">Amount</th></tr>");
+            foreach (var lineItem in parameters.AccountLineItems)
+            {
+                body.Append($"<tr><td>{lineItem.SegCode}</td><td>{lineItem.AccountName}</td><td>{lineItem.CurrencyCode}</td><td align=\"right\">{(int)Math.Abs(lineItem.Amount):N0}</td></tr>");
+            }
+            body.Append("</table>");
+
+            body.Append("<p>");
+            body.Append("<br>Regards,</br>");
+            body.Append("<br></br>");
+            foreach (var line in parameters.Signature)
+            {
+                body.Append($"<br>{line}</br>");
+            }
+            body.Append("</p>");
+
+            body.Append("</body>");
+            body.Append("</html>");
